@@ -1,7 +1,12 @@
-# BAD STOCK TRADING APP - DO NOT USE IN REAL LIFE
+"""
+Stock Market Mayhem - A simple stock trading simulation game
+
+WARNING: This is a simulation only and does not reflect real market behavior.
+Not intended for actual financial decisions or trading.
+"""
 
 import random
-
+import sys
 stocks = {
     "AAPL": 150,
     "GOOG": 2800,
@@ -12,7 +17,7 @@ stocks = {
 portfolio = {}
 money = 10000
 
-def show_menu():
+def show_menu() -> None:
     print("1. View Stocks")
     print("2. Buy Stock")
     print("3. Sell Stock")
@@ -26,20 +31,34 @@ def view_stocks():
         stocks[stock] = new_price
         print(f"{stock}: ${new_price}")
 
-def buy_stock():
+def buy_stock() -> None:
     global money
-    stock = input("Which stock do you want to buy? ")
-    qty = int(input("How many shares? "))
-    cost = stocks[stock] * qty
-    if money >= cost:
-        money -= cost
-        if stock in portfolio:
-            portfolio[stock] += qty
-        else:
-            portfolio[stock] = qty
-        print(f"Bought {qty} shares of {stock}")
-    else:
-        print("You broke.")
+    try:
+        stock = input("Which stock do you want to buy? ")
+        if stock not in stocks:
+            print(f"Stock {stock} not found.")
+            return
+
+        try:
+            qty = int(input("How many shares? "))
+            if qty <= 0:
+                print("Quantity must be positive.")
+                return
+
+            cost = stocks[stock] * qty
+            if money >= cost:
+                money -= cost
+                if stock in portfolio:
+                    portfolio[stock] += qty
+                else:
+                    portfolio[stock] = qty
+                print(f"Bought {qty} shares of {stock}")
+            else:
+                print("Insufficient funds.")
+        except ValueError:
+            print("Please enter a valid number.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def sell_stock():
     global money
